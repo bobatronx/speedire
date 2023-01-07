@@ -2,7 +2,8 @@ use crate::download::{k8s_downloader::{do_k8s_download, K8sMetadata}, download_m
 
 mod download;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     
     let k8s_metadata = K8sMetadata::default();
     
@@ -16,7 +17,7 @@ fn main() {
 
 
     println!("downloading tool");    
-    match do_k8s_download(&k8s_metadata) {
+    match do_k8s_download(&k8s_metadata).await {
         Ok(_) => println!("{} downloaded successfully", k8s_metadata.filename),
         Err(e) => panic!("unable to download file! {e:?}"),
     }

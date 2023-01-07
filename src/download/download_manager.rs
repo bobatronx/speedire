@@ -22,15 +22,13 @@ pub fn setup_tool_directory(tool_metadata: &impl ToolMetadata) -> Result<(), Box
     return Ok(())
 }
 
-pub fn download_tool(url: String, tool_metadata: &impl ToolMetadata) -> Result<(), Box<dyn Error>> {
-
+pub async fn download_tool(url: String, tool_metadata: &impl ToolMetadata) -> Result<(), Box<dyn Error>> {
     let tool_file = tool_metadata.get_path_to_file()?;
     let mut download = File::create(tool_file)?;
-    let resp = reqwest::blocking::get(url)?;
-    let resp_stream = resp.bytes()?;
-    let mut content = Cursor::new(resp_stream);
+    let resp = reqwest::get(url).await?;
+    let mut content = Cursor::new(resp.bytes().await?);
     std::io::copy(&mut content, &mut download)?;
-
+    
     Ok(())
 }
 
