@@ -1,7 +1,7 @@
 use crate::download::download_manager::download_tool;
 use crate::download::download_manager::TOOLS_HOME;
-
 use super::download_manager::ToolMetadata;
+
 use simple_error::bail;
 use std::error::Error;
 use std::env;

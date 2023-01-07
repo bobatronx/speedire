@@ -1,6 +1,8 @@
-use download::download_manager::ToolMetadata;
-
-use crate::download::{k8s_downloader::{do_k8s_download, K8sMetadata}, download_manager::{setup_tool_directory, setup_tool_permissions}};
+use crate::download::download_manager::ToolMetadata;
+use crate::download::k8s_downloader::do_k8s_download;
+use crate::download::k8s_downloader::K8sMetadata;
+use crate::download::download_manager::setup_tool_directory;
+use crate::download::download_manager::setup_tool_permissions;
 
 mod download;
 
