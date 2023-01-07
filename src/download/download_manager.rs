@@ -10,6 +10,7 @@ const TOOL_DEFAULT_PERMS: u32 = 0o770;
 pub trait ToolMetadata {
     fn get_path_to_dir(&self) -> Result<String, Box<dyn Error>>;
     fn get_path_to_file(&self) -> Result<String, Box<dyn Error>>;
+    fn new_version(version: String) -> Self;
 }
 
 pub fn setup_tool_directory(tool_metadata: &impl ToolMetadata) -> Result<(), Box<dyn Error>> {

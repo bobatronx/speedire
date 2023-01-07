@@ -1,3 +1,5 @@
+use download::download_manager::ToolMetadata;
+
 use crate::download::{k8s_downloader::{do_k8s_download, K8sMetadata}, download_manager::{setup_tool_directory, setup_tool_permissions}};
 
 mod download;
@@ -5,7 +7,7 @@ mod download;
 #[tokio::main]
 async fn main() {
     
-    let k8s_metadata = K8sMetadata::default();
+    let k8s_metadata = K8sMetadata::new_version(String::from("v1.25.0"));
     
     println!("setting up {} tool", k8s_metadata.filename);
     
