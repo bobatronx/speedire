@@ -51,8 +51,8 @@ impl ToolMetadata for K8sMetadata {
     }    
 }
 
-pub async fn do_k8s_download(metadata: &K8sMetadata) -> Result<(), Box<dyn std::error::Error>> {
+pub fn do_k8s_download(metadata: &K8sMetadata) -> Result<(), Box<dyn std::error::Error>> {
     println!("Downloading with the following metadat: {:?}", metadata);
     let download_url = format!("{}/{}/bin/{}/{}/kubectl", metadata.base_url, metadata.version, metadata.os, metadata.architecture);
-    return download_tool(download_url, metadata).await;
+    return download_tool(download_url, metadata);
 }

@@ -6,10 +6,9 @@ use crate::download::download_manager::setup_tool_permissions;
 
 mod download;
 
-#[tokio::main]
-async fn main() {
+fn main() {
     
-    let k8s_metadata = K8sMetadata::new_version(String::from("v1.25.0"));
+    let k8s_metadata = K8sMetadata::new_version(String::from("v1.26.0"));
     
     println!("setting up {} tool", k8s_metadata.filename);
     
@@ -19,9 +18,8 @@ async fn main() {
         Err(e) => panic!("unable to setup tool directory {e:?}"),
     };
 
-
     println!("downloading tool");    
-    match do_k8s_download(&k8s_metadata).await {
+    match do_k8s_download(&k8s_metadata) {
         Ok(_) => println!("{} downloaded successfully", k8s_metadata.filename),
         Err(e) => panic!("unable to download file! {e:?}"),
     }
