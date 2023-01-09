@@ -1,24 +1,24 @@
-use crate::download::download_manager::download_tool;
-use crate::download::download_manager::TOOLS_HOME;
-use super::download_manager::ToolMetadata;
+use crate::download::download_manager::download;
+use crate::tools::config::TOOLS_HOME;
+use crate::tools::config::ToolMetadata;
 
 use simple_error::bail;
 use std::error::Error;
 use std::env;
 
 #[derive(Debug)]
-pub struct K8sMetadata {
-    pub base_url: String,
+pub struct KubectlMetadata {
+    pub base_download_url: String,
     pub os: String,
     pub architecture: String,
     pub version: String,
     pub filename: String,
 }
 
-impl Default for K8sMetadata {
-    fn default() -> K8sMetadata {
-        K8sMetadata {
-            base_url: String::from("https://dl.k8s.io/release"),
+impl Default for KubectlMetadata {
+    fn default() -> KubectlMetadata {
+        KubectlMetadata {
+            base_download_url: String::from("https://dl.k8s.io/release"),
             os: String::from(env::consts::OS),
             architecture: String::from("amd64"),
             version: String::from("v1.26.0"),
@@ -27,7 +27,7 @@ impl Default for K8sMetadata {
     }
 }
 
-impl ToolMetadata for K8sMetadata {
+impl ToolMetadata for KubectlMetadata {
     fn get_path_to_dir(&self) -> Result<String, Box<dyn Error>>  {
         let home_dir = match home::home_dir() {
             Some(path) => path.display().to_string(),
@@ -46,13 +46,13 @@ impl ToolMetadata for K8sMetadata {
         return Ok(format!("{}/{}/{}/{}/{}", home_dir, TOOLS_HOME, self.filename, self.version, self.filename))
     }
 
-    fn new_version(version: String) -> K8sMetadata {
-        return K8sMetadata { version: version, ..Default::default() }
+    fn new_version(version: String) -> KubectlMetadata {
+        return KubectlMetadata { version: version, ..Default::default() }
     }    
 }
 
-pub fn do_k8s_download(metadata: &K8sMetadata) -> Result<(), Box<dyn std::error::Error>> {
+pub fn do_kubectl_download(metadata: &KubectlMetadata) -> Result<(), Box<dyn std::error::Error>> {
     println!("Downloading with the following metadat: {:?}", metadata);
-    let download_url = format!("{}/{}/bin/{}/{}/kubectl", metadata.base_url, metadata.version, metadata.os, metadata.architecture);
-    return download_tool(download_url, metadata);
+    let download_url = format!("{}/{}/bin/{}/{}/kubectl", metadata.base_download_url, metadata.version, metadata.os, metadata.architecture);
+    return download(download_url, metadata.get_path_to_file()?);
 }
