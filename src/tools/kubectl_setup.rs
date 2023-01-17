@@ -46,8 +46,8 @@ impl ToolMetadata for KubectlMetadata {
         return Ok(format!("{}/{}/{}/{}/{}", home_dir, TOOLS_HOME, self.filename, self.version, self.filename))
     }
 
-    fn new_version(version: String) -> KubectlMetadata {
-        return KubectlMetadata { version: version, ..Default::default() }
+    fn new_version(version: &str) -> KubectlMetadata {
+        return KubectlMetadata { version: String::from(version), ..Default::default() }
     }    
 }
 

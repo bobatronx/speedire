@@ -5,6 +5,7 @@ use crate::download::download_manager::download;
 use tar::Archive;
 use std::error::Error;
 use std::fs::File;
+use std::fs::remove_file;
 use simple_error::bail;
 use flate2::read::GzDecoder;
 
@@ -20,7 +21,7 @@ impl Default for PythonMetadata {
         PythonMetadata {
             base_download_url: String::from("https://www.python.org/ftp/python"),
             version: String::from("3.11.1"),
-            filename: String::from("python")
+            filename: String::from("python"),
         }
     }
 }
@@ -44,8 +45,8 @@ impl ToolMetadata for PythonMetadata {
         return Ok(format!("{}/{}/{}/{}/{}-{}.tgz", home_dir, TOOLS_HOME, self.filename, self.version, self.filename, self.version))
     }
 
-    fn new_version(version: String) -> Self {
-        return PythonMetadata{ version, ..Default::default() }
+    fn new_version(version: &str) -> Self {
+        return PythonMetadata { version: String::from(version), ..Default::default() }
     }
 }
 
@@ -61,7 +62,15 @@ pub fn extract_python_tar(metadata: &PythonMetadata) -> Result<(), Box<dyn Error
     let maybe_unpack = python_archive.unpack(metadata.get_path_to_dir()?);
 
     match maybe_unpack {
-        Ok(_) => Ok(()),
+        Ok(_) => {
+            match remove_file(metadata.get_path_to_file()?) {
+                Ok(_) => Ok(()),
+                Err(e) => {
+                    println!("unable to remove python tar file after extracting it {:#?}", e);
+                    Ok(())
+                }
+            }
+        },
         Err(e) => bail!(e),
     }    
 }

@@ -12,7 +12,7 @@ mod tools;
 
 fn main() {
     
-    let k8s_metadata = KubectlMetadata::new_version(String::from("v1.26.0"));
+    let k8s_metadata = KubectlMetadata::new_version("v1.26.0");
     
     println!("setting up {} tool", k8s_metadata.filename);
     
@@ -36,7 +36,7 @@ fn main() {
 
     println!("{} is ready to use", k8s_metadata.filename);
 
-    let python_metadata = PythonMetadata::new_version(String::from("3.11.1"));
+    let python_metadata = PythonMetadata::new_version("3.11.1");
     match setup_tool_directory(&python_metadata) {
         Ok(_) => println!("{} directory setup successfully", python_metadata.filename),
         Err(e) => panic!("unable to create directory {e:?}"),
