@@ -1,13 +1,13 @@
 use crate::download::download_manager::download;
-use crate::tools::config::TOOLS_HOME;
-use crate::tools::config::ToolMetadata;
+use crate ::tools::config;
 
-use simple_error::bail;
 use std::error::Error;
 use std::env;
+use std::fs;
+use std::os::unix::fs::PermissionsExt;
 
 #[derive(Debug)]
-pub struct KubectlMetadata {
+pub struct Kubectl {
     pub base_download_url: String,
     pub os: String,
     pub architecture: String,
@@ -15,9 +15,9 @@ pub struct KubectlMetadata {
     pub filename: String,
 }
 
-impl Default for KubectlMetadata {
-    fn default() -> KubectlMetadata {
-        KubectlMetadata {
+impl Default for Kubectl {
+    fn default() -> Kubectl {
+        Kubectl {
             base_download_url: String::from("https://dl.k8s.io/release"),
             os: String::from(env::consts::OS),
             architecture: String::from("amd64"),
@@ -27,32 +27,43 @@ impl Default for KubectlMetadata {
     }
 }
 
-impl ToolMetadata for KubectlMetadata {
-    fn get_path_to_dir(&self) -> Result<String, Box<dyn Error>>  {
-        let home_dir = match home::home_dir() {
-            Some(path) => path.display().to_string(),
-            None => bail!("cannot find home directory"),
-        };
+impl config::Tool for Kubectl {
 
-        return Ok(format!("{}/{}/{}/{}", home_dir, TOOLS_HOME, self.filename, self.version))
+    fn configure(&self) -> Result<(), Box<dyn Error>> {
+        let tools_home = config::get_tools_home()?;
+        let download_url = format!("{}/{}/bin/{}/{}/kubectl", &self.base_download_url, &self.version, &self.os, &self.architecture);
+        let download_location = tools_home.tool_tmp_dir + "/kubectl";
+        let binary_location = format!("{}/{}/{}", &tools_home.tool_bin_dir, &self.filename, &self.version);
+        let binary_file = format!("{}/{}", &binary_location, &self.filename);
+
+        println!("downloading kubectl from: {}", &download_url);
+        println!("downloading kubectl to: {}", &download_location);
+
+        download(&download_url, &download_location)?;
+        setup_kubectl_directories(&download_location, &binary_location, &binary_file)?;
+        setup_kubectl_permissions(&binary_file)?;
+    
+        Ok(())
     }
-
-    fn get_path_to_file(&self) -> Result<String, Box<dyn Error>> {
-        let home_dir = match home::home_dir() {
-            Some(path) => path.display().to_string(),
-            None => bail!("cannot find home directory"),
-        };
-
-        return Ok(format!("{}/{}/{}/{}/{}", home_dir, TOOLS_HOME, self.filename, self.version, self.filename))
-    }
-
-    fn new_version(version: &str) -> KubectlMetadata {
-        return KubectlMetadata { version: String::from(version), ..Default::default() }
-    }    
 }
 
-pub fn do_kubectl_download(metadata: &KubectlMetadata) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Downloading with the following metadat: {:?}", metadata);
-    let download_url = format!("{}/{}/bin/{}/{}/kubectl", metadata.base_download_url, metadata.version, metadata.os, metadata.architecture);
-    return download(download_url, metadata.get_path_to_file()?);
+fn setup_kubectl_directories(download_location: &str, binary_location: &str, binary_file: &str) -> Result<(), Box<dyn Error>> {
+    println!("creating directory: {}", &binary_location);
+    fs::create_dir_all(&binary_location)?;
+    println!("creating file: {}", &binary_file);
+    fs::File::create(&binary_file)?;
+    println!("copying kubectl to: {}", &binary_file);
+    fs::copy(&download_location, &binary_file)?;
+
+    Ok(())
+}
+
+fn setup_kubectl_permissions(kubectl_binary_location: &str) -> Result<(), Box<dyn Error>> {
+    println!("setting execute permissions on kubectl");
+    let kubectl = fs::File::open(kubectl_binary_location)?;
+    let mut perms = kubectl.metadata()?.permissions();
+    perms.set_mode(0o770);
+    kubectl.set_permissions(perms)?;
+
+    Ok(())
 }
