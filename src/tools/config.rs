@@ -1,21 +1,24 @@
 use std::fs;
 use std::path::Path;
 use std::error::Error;
+use std::process::Output;
 use simple_error::bail;
 
 const TOOLS_HOME: &str = ".local/spedire";
 const TOOLS_BIN: &str = ".local/spedire/bin";
 const TOOLS_TMP: &str = ".local/spedire/tmp";
+const TOOLS_OPT: &str = ".local/spedire/opt";
 
 pub struct ToolHome {
     pub tool_home: String,
     pub tool_bin_dir: String,
     pub tool_tmp_dir: String,
+    pub tool_opt_dir: String,
 }
 
 pub trait Tool {
     fn configure(&self) -> Result<(), Box<dyn Error>>;
-    // fn execute(&self) -> Result<(), Box<dyn Error>>;
+    fn execute(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
 }
 
 /// Get tool home information including the home directory,
@@ -34,12 +37,13 @@ pub fn get_tools_home() -> Result<ToolHome, Box<dyn Error>> {
         tool_home: format!("{}/{}", home_dir, TOOLS_HOME),
         tool_bin_dir: format!("{}/{}", home_dir, TOOLS_BIN),
         tool_tmp_dir: format!("{}/{}", home_dir, TOOLS_TMP),
+        tool_opt_dir: format!("{}/{}", home_dir, TOOLS_OPT),
     })
 }
 
 /// Initialize the Spedire tool system by creating the temporary
-/// download diretory and the bin directory for tool executables
-/// and versions
+/// download diretory, the bin directory and the opt directory 
+/// for tool executables and versions
 /// 
 /// # Errors
 /// Errors due to any issue working with the file system
@@ -54,6 +58,11 @@ pub fn initialize() -> Result<(), Box<dyn Error>> {
     if !Path::new(&tools_home.tool_bin_dir).exists() {
         println!("creating spedire bin dir: {}", &tools_home.tool_tmp_dir);
         fs::create_dir_all(&tools_home.tool_bin_dir)?;
+    }
+
+    if !Path::new(&tools_home.tool_opt_dir).exists() {
+        println!("creating spedire opt dir: {}", &tools_home.tool_opt_dir);
+        fs::create_dir_all(&tools_home.tool_opt_dir)?;
     }
 
     return Ok(())

@@ -5,6 +5,7 @@ use std::error::Error;
 use std::env;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
+use std::process::Output;
 
 #[derive(Debug)]
 pub struct Kubectl {
@@ -45,15 +46,19 @@ impl config::Tool for Kubectl {
     
         Ok(())
     }
+
+    fn execute(&self, _args: &[&str]) -> Result<Output, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 fn setup_kubectl_directories(download_location: &str, binary_location: &str, binary_file: &str) -> Result<(), Box<dyn Error>> {
-    println!("creating directory: {}", &binary_location);
-    fs::create_dir_all(&binary_location)?;
-    println!("creating file: {}", &binary_file);
-    fs::File::create(&binary_file)?;
-    println!("copying kubectl to: {}", &binary_file);
-    fs::copy(&download_location, &binary_file)?;
+    println!("creating directory: {}", binary_location);
+    fs::create_dir_all(binary_location)?;
+    println!("creating file: {}", binary_file);
+    fs::File::create(binary_file)?;
+    println!("copying kubectl to: {}", binary_file);
+    fs::copy(download_location, binary_file)?;
 
     Ok(())
 }

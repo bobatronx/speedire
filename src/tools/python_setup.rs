@@ -24,6 +24,10 @@ impl config::Tool for Python {
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         todo!()
     }
+
+    fn execute(&self, args: &[&str]) -> Result<std::process::Output, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 // impl ToolMetadata for PythonMetadata {
