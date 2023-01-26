@@ -24,27 +24,13 @@ fn test_initialize_cleanup() {
 }
 
 #[test]
-fn test_configure_poetry() {
-    let home_dir = home::home_dir().unwrap().display().to_string();
-    let tool_dir = format!("{}/.local/spedire/opt/poetry", home_dir);
-
-    let poetry = poetry_setup::Poetry::default();
-    let configure_result = poetry.configure();
-    assert!(configure_result.is_ok());
-    assert!(Path::new(&tool_dir).exists());
-
-    fs::remove_dir_all(&tool_dir).unwrap();
-}
-
-#[test]
 fn test_execute_poetry() {
     let home_dir = home::home_dir().unwrap().display().to_string();
     let tool_dir = format!("{}/.local/spedire/opt/poetry", home_dir);
 
     let poetry = poetry_setup::Poetry::default();
     poetry.configure().unwrap();
-    let args = ["--version"];
-    let execute_result = poetry.execute(&args);
+    let execute_result = poetry.execute("--version");
     assert!(execute_result.is_ok());
 
     fs::remove_dir_all(&tool_dir).unwrap();   

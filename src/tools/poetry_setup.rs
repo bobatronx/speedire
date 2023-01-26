@@ -33,7 +33,7 @@ impl config::Tool for Poetry {
         Ok(())
     }
 
-    fn execute(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
+    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
         let tools_home = config::get_tools_home()?;
         let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, &self.filename, &self.version, &self.filename);
 
@@ -45,6 +45,13 @@ impl config::Tool for Poetry {
             Ok(o) => Ok(o),
             Err(e) => bail!("unable to execute poetry command {:?}", e),
         }
+    }
+
+    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>> {
+        match self.execute_with_args(&[arg]) {
+            Ok(o) => Ok(o),
+            Err(e) => bail!("unable to execute poetry command {:?}", e),
+        }  
     }
 }
 

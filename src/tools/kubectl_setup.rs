@@ -47,7 +47,11 @@ impl config::Tool for Kubectl {
         Ok(())
     }
 
-    fn execute(&self, _args: &[&str]) -> Result<Output, Box<dyn Error>> {
+    fn execute(&self, _arg: &str) -> Result<Output, Box<dyn Error>> {
+        todo!()
+    }
+
+    fn execute_with_args(&self, _args: &[&str]) -> Result<Output, Box<dyn Error>> {
         todo!()
     }
 }

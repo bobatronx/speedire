@@ -18,7 +18,8 @@ pub struct ToolHome {
 
 pub trait Tool {
     fn configure(&self) -> Result<(), Box<dyn Error>>;
-    fn execute(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
+    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
+    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>>;
 }
 
 /// Get tool home information including the home directory,
