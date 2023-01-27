@@ -1,20 +1,9 @@
-// use carrier::tools::config::setup_tool_directory;
-// use carrier::tools::config::setup_tool_permissions;
-// use carrier::tools::config::ToolMetadata;
-// use carrier::tools::kubectl_setup::do_kubectl_download;
-// use carrier::tools::python_setup::do_python_download;
-// use carrier::tools::kubectl_setup::KubectlMetadata;
-// use carrier::tools::python_setup::PythonMetadata;
-// use carrier::tools::python_setup::extract_python_tar;
-// use carrier::tools::poetry_setup::PoetryMetadata;
-// use carrier::tools::poetry_setup::do_poetry_download;
-// use carrier::tools::poetry_setup::poetry_build;
-use carrier::tools::{kubectl_setup::Kubectl, config::Tool};
+use speedire::tools::{kubectl_setup::Kubectl, config::Tool};
 
 fn main() {
-    match carrier::tools::config::initialize() {
-        Ok(_) => println!("carrier initialized successfully"),
-        Err(e) => panic!("error initializing carrier {:?}", e),
+    match speedire::tools::config::initialize() {
+        Ok(_) => println!("speedire initialized successfully"),
+        Err(e) => panic!("error initializing speedire {:?}", e),
     }
     
     let kubectl = Kubectl::default();
@@ -23,7 +12,7 @@ fn main() {
         Err(e) => panic!("error downloading kubectl {:?}", e),
     }
     
-    // match carrier::tools::config::cleanup() {
+    // match speedire::tools::config::cleanup() {
     //     Ok(_) => println!("spedire cleaned up successfully"),
     //     Err(e) => panic!("could not cleanup spedire tool directory {:?}", e),
     // }

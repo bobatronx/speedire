@@ -1,6 +1,6 @@
-use carrier::tools::config;
-use carrier::tools::config::Tool;
-use carrier::tools::poetry_setup;
+use speedire::tools::config;
+use speedire::tools::config::Tool;
+use speedire::tools::poetry_setup;
 use std::{path::Path, fs};
 
 #[test]

@@ -39,17 +39,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfb24e866b15a1af2a1b663f10c6b6b8f397a84aadb828f12e5b289ec23a3a3c"
 
 [[package]]
-name = "carrier"
-version = "0.1.0"
-dependencies = [
- "flate2",
- "home",
- "reqwest",
- "simple-error",
- "tar",
-]
-
-[[package]]
 name = "cc"
 version = "1.0.78"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -688,6 +677,17 @@ checksum = "02e2d2db9033d13a1567121ddd7a095ee144db4e1ca1b1bda3419bc0da294ebd"
 dependencies = [
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "speedire"
+version = "0.1.0"
+dependencies = [
+ "flate2",
+ "home",
+ "reqwest",
+ "simple-error",
+ "tar",
 ]
 
 [[package]]
