@@ -1,6 +1,6 @@
-use speedire::tools::config;
-use speedire::tools::config::Tool;
-use speedire::tools::poetry_setup;
+use speedire::toolfs;
+use speedire::poetry_setup::Tool;
+use speedire::poetry_setup;
 use std::{path::Path, fs};
 
 #[test]
@@ -14,11 +14,11 @@ fn test_initialize_cleanup() {
         fs::remove_dir_all(&tool_dir).unwrap();
     }
 
-    let initialize_result = config::initialize();
+    let initialize_result = toolfs::initialize();
     assert!(initialize_result.is_ok());
     assert!(Path::new(&tool_dir).exists());
 
-    let cleanup_result = config::cleanup();
+    let cleanup_result = toolfs::cleanup();
     assert!(cleanup_result.is_ok());
     assert!(!Path::new(&tool_dir).exists());
 }

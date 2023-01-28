@@ -22,7 +22,7 @@ impl Default for Poetry {
     }
 }
 
-impl setup::Tool for Poetry {
+impl Tool for Poetry {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         let tools_home = setup::get_tools_home()?;

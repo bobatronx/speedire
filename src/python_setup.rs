@@ -1,8 +1,6 @@
-use crate::setup;
+pub use crate::setup::Tool;
 
 use std::error::Error;
-
-pub use setup::Tool;
 
 #[derive(Debug)]
 pub struct Python {
@@ -21,7 +19,7 @@ impl Default for Python {
     }
 }
 
-impl setup::Tool for Python {
+impl Tool for Python {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         todo!()
