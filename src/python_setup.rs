@@ -1,4 +1,4 @@
-use crate::tools::config;
+use crate::setup;
 
 use std::error::Error;
 
@@ -19,7 +19,7 @@ impl Default for Python {
     }
 }
 
-impl config::Tool for Python {
+impl setup::Tool for Python {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         todo!()

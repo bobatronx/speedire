@@ -1,4 +1,4 @@
-use crate::tools::config;
+use crate::setup;
 
 use std::error::Error;
 use std::fs;
@@ -20,10 +20,10 @@ impl Default for Poetry {
     }
 }
 
-impl config::Tool for Poetry {
+impl setup::Tool for Poetry {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
-        let tools_home = config::get_tools_home()?;
+        let tools_home = setup::get_tools_home()?;
         let poetry_home = format!("{}/{}/{}", tools_home.tool_opt_dir, &self.filename, &self.version);
 
         setup_poetry_home(&poetry_home)?;
@@ -34,7 +34,7 @@ impl config::Tool for Poetry {
     }
 
     fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
-        let tools_home = config::get_tools_home()?;
+        let tools_home = setup::get_tools_home()?;
         let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, &self.filename, &self.version, &self.filename);
 
         match Command::new(&poetry_bin)
