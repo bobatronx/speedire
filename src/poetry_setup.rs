@@ -5,6 +5,8 @@ use std::fs;
 use std::process::{Command, Stdio, Output};
 use simple_error::bail;
 
+pub use setup::Tool;
+
 #[derive(Debug)]
 pub struct Poetry {
     pub version: String,

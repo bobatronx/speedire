@@ -2,6 +2,8 @@ use crate::setup;
 
 use std::error::Error;
 
+pub use setup::Tool;
+
 #[derive(Debug)]
 pub struct Python {
     pub base_download_url: String,
