@@ -1,4 +1,5 @@
-pub use crate::setup::Tool;
+use crate::toolfs;
+
 
 use std::error::Error;
 
@@ -19,7 +20,7 @@ impl Default for Python {
     }
 }
 
-impl Tool for Python {
+impl toolfs::Tool for Python {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         todo!()

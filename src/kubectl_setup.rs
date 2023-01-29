@@ -1,12 +1,12 @@
-use crate::setup;
+use crate::metadata;
+use crate::download_manager;
+use crate::toolfs;
 
 use std::error::Error;
 use std::env;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::process::Output;
-
-pub use setup::Tool;
 
 #[derive(Debug)]
 pub struct Kubectl {
@@ -29,10 +29,10 @@ impl Default for Kubectl {
     }
 }
 
-impl Tool for Kubectl {
+impl toolfs::Tool for Kubectl {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
-        let tools_home = setup::get_tools_home()?;
+        let tools_home = metadata::get_tools_home()?;
         let download_url = format!("{}/{}/bin/{}/{}/kubectl", &self.base_download_url, &self.version, &self.os, &self.architecture);
         let download_location = tools_home.tool_tmp_dir + "/kubectl";
         let binary_location = format!("{}/{}/{}", &tools_home.tool_bin_dir, &self.filename, &self.version);
@@ -41,7 +41,7 @@ impl Tool for Kubectl {
         println!("downloading kubectl from: {}", &download_url);
         println!("downloading kubectl to: {}", &download_location);
 
-        setup::download(&download_url, &download_location)?;
+        download_manager::download(&download_url, &download_location)?;
         setup_kubectl_directories(&download_location, &binary_location, &binary_file)?;
         setup_kubectl_permissions(&binary_file)?;
     

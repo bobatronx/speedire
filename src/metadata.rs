@@ -1,18 +1,5 @@
-use std::io::Cursor;
-use std::fs::File;
 use std::error::Error;
-use std::io::copy;
-use std::process::Output;
 use simple_error::bail;
-
-pub fn download(url: &str, filepath: &str) -> Result<(), Box<dyn Error>> {
-    let mut download = File::create(filepath)?;
-    let resp = reqwest::blocking::get(url)?;
-    let mut content = Cursor::new(resp.bytes()?);
-    copy(&mut content, &mut download)?;
-
-    Ok(())
-}
 
 const TOOLS_HOME: &str = ".local/spedire";
 const TOOLS_BIN: &str = ".local/spedire/bin";
@@ -24,12 +11,6 @@ pub struct ToolHome {
     pub tool_bin_dir: String,
     pub tool_tmp_dir: String,
     pub tool_opt_dir: String,
-}
-
-pub trait Tool {
-    fn configure(&self) -> Result<(), Box<dyn Error>>;
-    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
-    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>>;
 }
 
 /// Get tool home information including the home directory,

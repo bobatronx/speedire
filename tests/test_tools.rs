@@ -1,7 +1,7 @@
 use speedire::toolfs;
-use speedire::poetry_setup::Tool;
 use speedire::poetry_setup;
 use std::{path::Path, fs};
+use speedire::toolfs::Tool;
 
 #[test]
 fn test_initialize_cleanup() {

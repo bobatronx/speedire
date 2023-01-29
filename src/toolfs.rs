@@ -1,8 +1,15 @@
-use crate::setup;
+use crate::metadata;
 
 use std::path::Path;
 use std::fs;
 use std::error::Error;
+use std::process::Output;
+
+pub trait Tool {
+    fn configure(&self) -> Result<(), Box<dyn Error>>;
+    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
+    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>>;
+}
 
 /// Initialize the Spedire tool system by creating the temporary
 /// download diretory, the bin directory and the opt directory 
@@ -11,7 +18,7 @@ use std::error::Error;
 /// # Errors
 /// Errors due to any issue working with the file system
 pub fn initialize() -> Result<(), Box<dyn Error>> {
-    let tools_home = setup::get_tools_home()?;
+    let tools_home = metadata::get_tools_home()?;
 
     if !Path::new(&tools_home.tool_tmp_dir).exists() {
         println!("creating spedire tmp dir: {}", &tools_home.tool_tmp_dir);
@@ -37,7 +44,7 @@ pub fn initialize() -> Result<(), Box<dyn Error>> {
 /// # Errors
 /// Errors due to any issues with the filesystem
 pub fn cleanup() -> Result<(), Box<dyn Error>> {
-    let tools_home = setup::get_tools_home()?;
+    let tools_home = metadata::get_tools_home()?;
 
     if Path::new(&tools_home.tool_home).exists() {
         println!("removing spedire working directory: {}", &tools_home.tool_home);

@@ -3,4 +3,5 @@ pub mod poetry_setup;
 pub mod python_setup;
 pub mod toolfs;
 
-mod setup;
+mod download_manager;
+mod metadata;

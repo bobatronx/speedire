@@ -1,11 +1,10 @@
-use crate::setup;
+use crate::metadata;
+use crate::toolfs;
 
 use std::error::Error;
 use std::fs;
 use std::process::{Command, Stdio, Output};
 use simple_error::bail;
-
-pub use setup::Tool;
 
 #[derive(Debug)]
 pub struct Poetry {
@@ -22,10 +21,10 @@ impl Default for Poetry {
     }
 }
 
-impl Tool for Poetry {
+impl toolfs::Tool for Poetry {
 
     fn configure(&self) -> Result<(), Box<dyn Error>> {
-        let tools_home = setup::get_tools_home()?;
+        let tools_home = metadata::get_tools_home()?;
         let poetry_home = format!("{}/{}/{}", tools_home.tool_opt_dir, &self.filename, &self.version);
 
         setup_poetry_home(&poetry_home)?;
@@ -36,7 +35,7 @@ impl Tool for Poetry {
     }
 
     fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
-        let tools_home = setup::get_tools_home()?;
+        let tools_home = metadata::get_tools_home()?;
         let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, &self.filename, &self.version, &self.filename);
 
         match Command::new(&poetry_bin)
