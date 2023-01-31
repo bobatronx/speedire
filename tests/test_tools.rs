@@ -1,3 +1,4 @@
+use speedire::kubectl_setup;
 use speedire::toolfs;
 use speedire::poetry_setup;
 use std::{path::Path, fs};
@@ -25,13 +26,29 @@ fn test_initialize_cleanup() {
 
 #[test]
 fn test_execute_poetry() {
-    let home_dir = home::home_dir().unwrap().display().to_string();
-    let tool_dir = format!("{}/.local/spedire/opt/poetry", home_dir);
+    toolfs::initialize().unwrap();
 
     let poetry = poetry_setup::Poetry::default();
     poetry.configure().unwrap();
     let execute_result = poetry.execute("--version");
     assert!(execute_result.is_ok());
 
-    fs::remove_dir_all(&tool_dir).unwrap();   
+    toolfs::cleanup().unwrap();
+}
+
+#[test]
+fn test_execute_kubectl() {
+    toolfs::initialize().unwrap();
+
+    let kubectl = kubectl_setup::Kubectl::default();
+    kubectl.configure().unwrap();
+    let execute_result = kubectl.execute_with_args(&["version", "--short", "--client=true"]);
+    assert!(execute_result.is_ok());
+
+    toolfs::cleanup().unwrap();
+}
+
+#[test]
+fn test_pipeline_build() {
+
 }
