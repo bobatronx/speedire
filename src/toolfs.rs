@@ -47,7 +47,7 @@ pub fn cleanup() -> Result<(), Box<dyn Error>> {
     let tools_home = metadata::get_tools_home()?;
 
     if Path::new(&tools_home.tool_home).exists() {
-        println!("removing spedire working directory: {}", &tools_home.tool_home);
+        println!("removing speedire working directory: {}", &tools_home.tool_home);
         fs::remove_dir_all(&tools_home.tool_home)?;
     }
 

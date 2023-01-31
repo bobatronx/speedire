@@ -1,10 +1,10 @@
 use std::error::Error;
 use simple_error::bail;
 
-const TOOLS_HOME: &str = ".local/spedire";
-const TOOLS_BIN: &str = ".local/spedire/bin";
-const TOOLS_TMP: &str = ".local/spedire/tmp";
-const TOOLS_OPT: &str = ".local/spedire/opt";
+const TOOLS_HOME: &str = ".local/speedire";
+const TOOLS_BIN: &str = ".local/speedire/bin";
+const TOOLS_TMP: &str = ".local/speedire/tmp";
+const TOOLS_OPT: &str = ".local/speedire/opt";
 
 pub struct ToolHome {
     pub tool_home: String,
@@ -22,7 +22,7 @@ pub struct ToolHome {
 pub fn get_tools_home() -> Result<ToolHome, Box<dyn Error>> {
     let home_dir = match home::home_dir() {
         Some(path) => path.display().to_string(),
-        None => bail!("this tool requires a home directory setup at &HOME/.local/spedire, but home directory could not be detected based on os"),
+        None => bail!("this tool requires a home directory setup at &HOME/.local/speedire, but home directory could not be detected based on os"),
     };
     
     return Ok(ToolHome {

@@ -18,6 +18,47 @@ pub struct Kubectl {
     pub filename: String,
 }
 
+impl Kubectl {
+    pub fn set_namespace(&self, namespace: &str) -> Result<Output, Box<dyn Error>> {
+        let tools_home = metadata::get_tools_home()?;
+        let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
+        
+        match Command::new(&kubectl_bin)
+        .arg("config")
+        .arg("set-context")
+        .arg("--current")
+        .arg(format!("--namespace={}",namespace))
+        .stdin(Stdio::null())
+        .stdout(Stdio::inherit())
+        .output() {
+            Ok(o) => Ok(o),
+            Err(e) => bail!("unable to execute kubectl command {:?}", e),
+        }
+    }
+
+    pub fn current_namespace(&self) -> Result<String, Box<dyn Error>> {
+        let tools_home = metadata::get_tools_home()?;
+        let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
+        
+        match Command::new(&kubectl_bin)
+        .arg("config")
+        .arg("view")
+        .arg("--minify")
+        .arg("-o")
+        .arg("jsonpath={..namespace}")
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .output() {
+            Ok(o) => match String::from_utf8(o.stdout) {
+                Ok(s) => Ok(s),
+                Err(e) => bail!("unable to convert stdout to string {:?}", e),
+            },
+            Err(e) => bail!("unable to execute kubectl command {:?}", e),
+        }        
+    }
+}
+
+
 impl Default for Kubectl {
     fn default() -> Kubectl {
         Kubectl {

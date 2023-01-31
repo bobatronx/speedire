@@ -7,7 +7,7 @@ use speedire::toolfs::Tool;
 #[test]
 fn test_initialize_cleanup() {
     let home_dir = home::home_dir().unwrap().display().to_string();
-    let tool_dir = format!("{}/.local/spedire", home_dir);
+    let tool_dir = format!("{}/.local/speedire", home_dir);
 
     let tool_dir_path = Path::new(&tool_dir);
 
@@ -42,8 +42,11 @@ fn test_execute_kubectl() {
 
     let kubectl = kubectl_setup::Kubectl::default();
     kubectl.configure().unwrap();
-    let execute_result = kubectl.execute_with_args(&["version", "--short", "--client=true"]);
+    let set_namespace_result = kubectl.set_namespace("speedire");
+    assert!(set_namespace_result.is_ok());
+    let execute_result = kubectl.current_namespace();
     assert!(execute_result.is_ok());
+    assert!(execute_result.unwrap() == "speedire");
 
     toolfs::cleanup().unwrap();
 }
