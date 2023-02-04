@@ -30,7 +30,7 @@ fn test_execute_poetry() {
 
     let poetry = poetry_setup::Poetry::default();
     poetry.configure().unwrap();
-    let execute_result = poetry.execute("--version");
+    let execute_result = poetry.execute("--version", None);
     assert!(execute_result.is_ok());
 
     toolfs::cleanup().unwrap();
