@@ -26,13 +26,17 @@ impl toolfs::Tool for Python {
         todo!()
     }
 
-    fn execute(&self, _arg: &str) -> Result<std::process::Output, Box<dyn Error>> {
-        todo!()
-    }
+    // fn execute_build(&self) -> Result<std::process::Output, Box<dyn Error>> {
+    //     todo!()
+    // }
 
-    fn execute_with_args(&self, _args: &[&str]) -> Result<std::process::Output, Box<dyn Error>> {
-        todo!()
-    }
+    // fn execute(&self, _arg: &str) -> Result<std::process::Output, Box<dyn Error>> {
+    //     todo!()
+    // }
+
+    // fn execute_with_args(&self, _args: &[&str]) -> Result<std::process::Output, Box<dyn Error>> {
+    //     todo!()
+    // }
 }
 
 // impl ToolMetadata for PythonMetadata {

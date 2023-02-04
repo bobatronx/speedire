@@ -7,8 +7,16 @@ use std::process::Output;
 
 pub trait Tool {
     fn configure(&self) -> Result<(), Box<dyn Error>>;
-    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
-    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>>;
+}
+
+pub trait BuilderTool {
+    // fn execute_with_args(&self, args: &[&str]) -> Box<dyn Tool>;
+    // fn execute(&self, arg: &str) -> Box<dyn Tool>;
+    fn build(&self) -> Result<Output, Box<dyn Error>>;
+}
+
+pub trait DeployerTool {
+    fn deploy(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
 }
 
 /// Initialize the Spedire tool system by creating the temporary

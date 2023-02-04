@@ -27,33 +27,54 @@ impl toolfs::Tool for Poetry {
         let tools_home = metadata::get_tools_home()?;
         let poetry_home = format!("{}/{}/{}", tools_home.tool_opt_dir, &self.filename, &self.version);
 
-        setup_poetry_home(&poetry_home)?;
-        create_venv(&poetry_home)?;
-        install_poetry(&poetry_home, &self.version)?;
-    
+        setup_poetry_home(&poetry_home)
+        .and(create_venv(&poetry_home))
+        .and(install_poetry(&poetry_home, &self.version))?;
+        
         Ok(())
     }
+}
 
-    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
+impl toolfs::BuilderTool for Poetry {
+    fn build(&self) -> Result<Output, Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;
-        let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, &self.filename, &self.version, &self.filename);
-
-        match Command::new(&poetry_bin)
-        .args(args)
+        let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, self.filename, self.version, self.filename);
+        
+        Command::new(&poetry_bin)
+        .arg("update")
         .stdin(Stdio::null())
         .stdout(Stdio::inherit())
-        .output() {
-            Ok(o) => Ok(o),
-            Err(e) => bail!("unable to execute poetry command {:?}", e),
-        }
+        .output()
+        .expect("unable to execute poetry update command");
+
+        Ok(Command::new(&poetry_bin)
+        .arg("build")
+        .stdin(Stdio::null())
+        .stdout(Stdio::inherit())
+        .output()
+        .expect("unable to execute poetry build command"))
     }
 
-    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>> {
-        match self.execute_with_args(&[arg]) {
-            Ok(o) => Ok(o),
-            Err(e) => bail!("unable to execute poetry command {:?}", e),
-        }  
-    }
+    // fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
+    //     let tools_home = metadata::get_tools_home()?;
+    //     let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, &self.filename, &self.version, &self.filename);
+
+    //     match Command::new(&poetry_bin)
+    //     .args(args)
+    //     .stdin(Stdio::null())
+    //     .stdout(Stdio::inherit())
+    //     .output() {
+    //         Ok(o) => Ok(o),
+    //         Err(e) => bail!("unable to execute poetry command {:?}", e),
+    //     }
+    // }
+
+    // fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>> {
+    //     match self.execute_with_args(&[arg]) {
+    //         Ok(o) => Ok(o),
+    //         Err(e) => bail!("unable to execute poetry command {:?}", e),
+    //     }  
+    // }
 }
 
 
