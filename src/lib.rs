@@ -1,5 +1,4 @@
 pub mod kubectl_setup;
-pub mod pipeline;
 pub mod poetry_setup;
 pub mod python_setup;
 pub mod toolfs;
