@@ -90,12 +90,11 @@ impl toolfs::Tool for Kubectl {
         Ok(())
     }
 
-    fn execute_with_args(&self, args: &[&str], working_dir: Option<&str>) -> Result<Output, Box<dyn Error>> {
+    fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;
         let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
 
         match Command::new(&kubectl_bin)
-        .current_dir(fs::canonicalize(working_dir.unwrap_or("."))?)
         .args(args)
         .stdin(Stdio::null())
         .stdout(Stdio::inherit())
@@ -105,8 +104,8 @@ impl toolfs::Tool for Kubectl {
         }
     }
 
-    fn execute(&self, arg: &str, working_dir: Option<&str>) -> Result<Output, Box<dyn Error>> {
-        match self.execute_with_args(&[arg], working_dir) {
+    fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>> {
+        match self.execute_with_args(&[arg]) {
             Ok(o) => Ok(o),
             Err(e) => bail!("unable to kubectl command {:?}", e),
         }  

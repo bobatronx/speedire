@@ -26,11 +26,11 @@ impl toolfs::Tool for Python {
         todo!()
     }
 
-    fn execute(&self, _arg: &str, _working_dir: Option<&str>) -> Result<std::process::Output, Box<dyn Error>> {
+    fn execute(&self, _arg: &str) -> Result<std::process::Output, Box<dyn Error>> {
         todo!()
     }
 
-    fn execute_with_args(&self, _args: &[&str], _working_dir: Option<&str>) -> Result<std::process::Output, Box<dyn Error>> {
+    fn execute_with_args(&self, _args: &[&str]) -> Result<std::process::Output, Box<dyn Error>> {
         todo!()
     }
 }
