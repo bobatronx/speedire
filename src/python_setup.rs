@@ -1,7 +1,7 @@
-use crate::toolfs;
+// use crate::toolfs;
 
 
-use std::error::Error;
+// use std::error::Error;
 
 #[derive(Debug)]
 pub struct Python {
@@ -20,11 +20,11 @@ impl Default for Python {
     }
 }
 
-impl toolfs::Tool for Python {
+// impl toolfs::Tool for Python {
 
-    fn configure(&self) -> Result<(), Box<dyn Error>> {
-        todo!()
-    }
+    // fn configure(&self) -> Result<(), Box<dyn Error>> {
+    //     todo!()
+    // }
 
     // fn execute_build(&self) -> Result<std::process::Output, Box<dyn Error>> {
     //     todo!()
@@ -37,7 +37,7 @@ impl toolfs::Tool for Python {
     // fn execute_with_args(&self, _args: &[&str]) -> Result<std::process::Output, Box<dyn Error>> {
     //     todo!()
     // }
-}
+// }
 
 // impl ToolMetadata for PythonMetadata {
 //     fn get_path_to_dir(&self) -> Result<String, Box<dyn Error>> {

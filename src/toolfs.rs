@@ -5,9 +5,9 @@ use std::fs;
 use std::error::Error;
 use std::process::Output;
 
-pub trait Tool {
-    fn configure(&self) -> Result<(), Box<dyn Error>>;
-}
+// pub trait Tool {
+//     fn configure(&self) -> Result<(), Box<dyn Error>>;
+// }
 
 pub trait BuilderTool {
     // fn execute_with_args(&self, args: &[&str]) -> Box<dyn Tool>;
@@ -16,7 +16,7 @@ pub trait BuilderTool {
 }
 
 pub trait DeployerTool {
-    fn deploy(&self, args: &[&str]) -> Result<Output, Box<dyn Error>>;
+    fn deploy(&self) -> Result<(), Box<dyn Error>>;
 }
 
 /// Initialize the Spedire tool system by creating the temporary
