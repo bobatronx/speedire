@@ -9,7 +9,6 @@ use std::os::unix::fs::PermissionsExt;
 use std::process::{Command, Stdio, Output};
 use simple_error::bail;
 
-// #[derive(Debug)]
 pub struct Kubectl {
     base_download_url: String,
     os: String,
@@ -39,21 +38,7 @@ impl Kubectl {
         Ok(())
     }
 
-    pub fn namespace(&mut self, namespace: &str) -> &Kubectl {
-        // let tools_home = metadata::get_tools_home().expect("unable to get tools home");
-        // let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
-        
-        // Command::new(&kubectl_bin)
-        // .arg("config")
-        // .arg("set-context")
-        // .arg("--current")
-        // .arg(format!("--namespace={}",namespace))
-        // .stdin(Stdio::null())
-        // .stdout(Stdio::inherit())
-        // .output()
-        // .expect("unable to set kube context");
-
-        // self
+    pub fn namespace(&mut self, namespace: &str) -> &mut Kubectl {
         self.namespace = String::from(namespace);
         self
     }
@@ -76,21 +61,7 @@ impl Kubectl {
         }
     }
 
-    pub fn apply(&mut self, filename: &str) -> &Kubectl {
-    //     let tools_home = metadata::get_tools_home().expect("unable to get tools home");
-    //     let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
-
-    //     Command::new(&kubectl_bin)
-    //     .arg("apply")
-    //     .arg("-f")
-    //     .arg(filename)
-    //     .stdin(Stdio::null())
-    //     .stdout(Stdio::inherit())
-    //     .output()
-    //     .expect("unable to run kubectl apply");
-
-    //     self
-    // }
+    pub fn apply(&mut self, filename: &str) -> &mut Kubectl {
         self.deploy_files.push(String::from(filename));
         self
     }
@@ -116,25 +87,6 @@ impl Default for Kubectl {
     }
 }
 
-// impl toolfs::Tool for Kubectl {
-//     fn configure(&self) -> Result<(), Box<dyn Error>> {
-//         let tools_home = metadata::get_tools_home()?;
-//         let download_url = format!("{}/{}/bin/{}/{}/kubectl", &self.base_download_url, &self.version, &self.os, &self.architecture);
-//         let download_location = tools_home.tool_tmp_dir + "/kubectl";
-//         let binary_location = format!("{}/{}/{}", &tools_home.tool_bin_dir, &self.filename, &self.version);
-//         let binary_file = format!("{}/{}", &binary_location, &self.filename);
-
-//         println!("downloading kubectl from: {}", &download_url);
-//         println!("downloading kubectl to: {}", &download_location);
-
-//         download_manager::download(&download_url, &download_location)?;
-//         setup_kubectl_directories(&download_location, &binary_location, &binary_file)?;
-//         setup_kubectl_permissions(&binary_file)?;
-    
-//         Ok(())
-//     }
-// }
-
 impl toolfs::DeployerTool for Kubectl {
 
     fn deploy(&self) -> Result<(), Box<dyn Error>> {
@@ -149,7 +101,7 @@ impl toolfs::DeployerTool for Kubectl {
         .stdin(Stdio::null())
         .stdout(Stdio::inherit())
         .output() {
-            Ok(o) => (),
+            Ok(_o) => (),
             Err(e) => bail!("could not change kubectl namespace {:?}", e),
         };
 
@@ -161,34 +113,13 @@ impl toolfs::DeployerTool for Kubectl {
             .stdin(Stdio::null())
             .stdout(Stdio::inherit())
             .output() {
-                Ok(o) => (),
+                Ok(_o) => (),
                 Err(e) => bail!("could not kubectl apply files {:?}", e),
             };
         };
 
         Ok(())
     }
-
-    // fn execute_with_args(&self, args: &[&str]) -> Result<Output, Box<dyn Error>> {
-    //     let tools_home = metadata::get_tools_home()?;
-    //     let kubectl_bin = format!("{}/{}/{}/{}", tools_home.tool_bin_dir, &self.filename, &self.version, &self.filename);
-
-    //     match Command::new(&kubectl_bin)
-    //     .args(args)
-    //     .stdin(Stdio::null())
-    //     .stdout(Stdio::inherit())
-    //     .output() {
-    //         Ok(o) => Ok(o),
-    //         Err(e) => bail!("unable to execute kubectl command {:?}", e),
-    //     }
-    // }
-
-    // fn execute(&self, arg: &str) -> Result<Output, Box<dyn Error>> {
-    //     match self.execute_with_args(&[arg]) {
-    //         Ok(o) => Ok(o),
-    //         Err(e) => bail!("unable to kubectl command {:?}", e),
-    //     }  
-    // }
 }
 
 fn setup_kubectl_directories(download_location: &str, binary_location: &str, binary_file: &str) -> Result<(), Box<dyn Error>> {
