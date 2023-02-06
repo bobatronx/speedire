@@ -6,13 +6,33 @@ use std::fs;
 use std::process::{Command, Stdio, Output};
 use simple_error::bail;
 
-#[derive(Debug)]
-pub struct Poetry {
-    pub version: String,
-    pub filename: String,
+pub struct PoetryCommandBuilder {
+    filename: String,
+    version: String,
 }
 
-impl Poetry {
+impl PoetryCommandBuilder {
+    pub fn new() -> PoetryCommandBuilder {
+        PoetryCommandBuilder { 
+            filename: String::from("poetry"), 
+            version: String::from("1.3.2"),
+        }
+    }
+
+    pub fn compile(self) -> PoetryCommand {
+        PoetryCommand {
+            filename: self.filename,
+            version: self.version,   
+        }
+    }
+}
+
+pub struct PoetryCommand {
+    filename: String,
+    version: String,
+}
+
+impl PoetryCommand {
     fn configure(&self) -> Result<(), Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;
         let poetry_home = format!("{}/{}/{}", tools_home.tool_opt_dir, &self.filename, &self.version);
@@ -25,9 +45,9 @@ impl Poetry {
     }
 }
 
-impl Default for Poetry {
-    fn default() -> Poetry {
-        let poetry = Poetry {
+impl Default for PoetryCommand {
+    fn default() -> PoetryCommand {
+        let poetry = PoetryCommand {
             version: String::from("1.3.2"),
             filename: String::from("poetry"),
         };
@@ -38,7 +58,7 @@ impl Default for Poetry {
     }
 }
 
-impl toolfs::BuilderTool for Poetry {
+impl toolfs::BuilderTool for PoetryCommand {
     fn build(&self) -> Result<Output, Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;
         let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, self.filename, self.version, self.filename);
