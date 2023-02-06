@@ -26,7 +26,10 @@ pub struct KubectlCommandBuilder {
 
 impl KubectlCommandBuilder {
     pub fn new() -> KubectlCommandBuilder {
-        KubectlCommandBuilder { namespace: String::from("default"), deploy_files: Vec::new() }
+        KubectlCommandBuilder { 
+            deploy_files: Vec::new(),
+            namespace: String::from("default"), 
+        }
     }
 
     pub fn namespace(mut self, namespace: &str) -> KubectlCommandBuilder {

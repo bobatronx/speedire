@@ -22,7 +22,8 @@ impl PoetryCommandBuilder {
     pub fn compile(self) -> PoetryCommand {
         PoetryCommand {
             filename: self.filename,
-            version: self.version,   
+            version: self.version,  
+            ..Default::default() 
         }
     }
 }
