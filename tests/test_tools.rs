@@ -1,10 +1,7 @@
-use speedire::kubectl_setup::{KubectlCommandBuilder};
-use speedire::toolfs;
-use speedire::poetry_setup::{PoetryCommandBuilder};
+use speedire::commands::kubectl::{KubectlCommandBuilder};
+use speedire::commands::poetry::{PoetryCommandBuilder};
 use std::{path::Path, fs};
-use speedire::toolfs::{BuilderTool, DeployerTool};
-use speedire::pipelines::{BuildPipelineBuilder, DeployPipelineBuilder};
-use speedire::pipelines::{PipelineBuilder, PipelineDeployer};
+use speedire::pipelines::*;
 
 #[test]
 fn test_initialize_cleanup() {
@@ -17,18 +14,15 @@ fn test_initialize_cleanup() {
         fs::remove_dir_all(&tool_dir).unwrap();
     }
 
-    let initialize_result = toolfs::initialize();
-    assert!(initialize_result.is_ok());
+    Speedire::new();
     assert!(Path::new(&tool_dir).exists());
-
-    let cleanup_result = toolfs::cleanup();
-    assert!(cleanup_result.is_ok());
+    Speedire::destroy();
     assert!(!Path::new(&tool_dir).exists());
 }
 
 #[test]
 fn test_execute_poetry() {
-    toolfs::initialize().unwrap();
+    Speedire::new();
 
     let build_result = PoetryCommandBuilder::new()
     .compile()
@@ -36,12 +30,12 @@ fn test_execute_poetry() {
 
     assert!(build_result.is_ok());
 
-    toolfs::cleanup().unwrap();
+    Speedire::destroy();
 }
 
 #[test]
 fn test_execute_kubectl() {
-    toolfs::initialize().unwrap();
+    Speedire::new();
 
     let deploy_result = KubectlCommandBuilder::new()
     .namespace("speedire")
@@ -50,32 +44,34 @@ fn test_execute_kubectl() {
 
     assert!(deploy_result.is_ok());
 
-    toolfs::cleanup().unwrap();
+    Speedire::destroy();
 }
 
 #[test]
 fn test_pipeline_builder() {
-    toolfs::initialize().unwrap();
 
-    let poetry_command = PoetryCommandBuilder::new()
-    .compile();
-    
-    let kubectl_command = KubectlCommandBuilder::new()
-    .namespace("speedire")
-    .apply("k8s/deployment.yaml")
-    .compile();
+    let build_result = Speedire::new()
+    .builder()
+    .step(Box::new(
+        PoetryCommandBuilder::new()
+        .compile()
+    ))
+    .compile()
+    .build();
 
-    let pipeline_builder = BuildPipelineBuilder::new()
-    .step(Box::new(poetry_command))
-    .compile();
-
-    let pipeline_deployer = DeployPipelineBuilder::new()
-    .step(Box::new(kubectl_command))
-    .compile();
-
-    let build_result = pipeline_builder.build();
-    let deploy_result = pipeline_deployer.deploy();
+    let deploy_result = Speedire::new()
+    .deployer()
+    .step(Box::new(
+        KubectlCommandBuilder::new()
+        .namespace("speedire")
+        .apply("k8s/deployment.yaml")
+        .compile()
+    ))
+    .compile()
+    .deploy();
 
     assert!(build_result.is_ok());
     assert!(deploy_result.is_ok());
+
+    Speedire::destroy();
 }

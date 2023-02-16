@@ -1,6 +1,6 @@
 use crate::metadata;
 use crate::download_manager;
-use crate::toolfs;
+use crate::pipelines::DeployerTool;
 
 use std::error::Error;
 use std::env;
@@ -109,7 +109,7 @@ impl Default for KubectlCommand {
     }
 }
 
-impl toolfs::DeployerTool for KubectlCommand {
+impl DeployerTool for KubectlCommand {
 
     fn deploy(&self) -> Result<(), Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;

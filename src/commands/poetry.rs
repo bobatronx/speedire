@@ -1,5 +1,5 @@
 use crate::metadata;
-use crate::toolfs;
+use crate::pipelines::BuilderTool;
 
 use std::error::Error;
 use std::fs;
@@ -59,7 +59,7 @@ impl Default for PoetryCommand {
     }
 }
 
-impl toolfs::BuilderTool for PoetryCommand {
+impl BuilderTool for PoetryCommand {
     fn build(&self) -> Result<Output, Box<dyn Error>> {
         let tools_home = metadata::get_tools_home()?;
         let poetry_bin = format!("{}/{}/{}/bin/{}", tools_home.tool_opt_dir, self.filename, self.version, self.filename);
